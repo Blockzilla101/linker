@@ -12,16 +12,47 @@ repositories{
 ext{
     //the build number that this plugin is made for
     mindustryVersion = 'v104'
+    nydusCommit = "77475ba"
 }
 
 dependencies{
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
+
+    compile group:'org.xerial', name:'sqlite-jdbc', version:'3.31.1'
+
+    implementation("com.github.Quezler.Mindustry:core:$nydusCommit") {
+        version {
+            branch = "nydus"
+        }
+    }
+
+    implementation("com.github.Quezler.Mindustry:server:$nydusCommit") {
+        version {
+            branch = "nydus"
+        }
+    }
+
+    implementation 'org.javacord:javacord:3.0.5'
 }
 
 jar{
-    version = null
-    from{
-        configurations.runtimeClasspath.collect{it.isDirectory() ? it : zipTree(it)}
+    doFirst {
+        version = null
+        from{
+            configurations.runtimeClasspath.collect{it.isDirectory() ? it : zipTree(it)}
+        }
+    }
+}
+
+task dist (dependsOn: [jar]) {
+    doFirst {
+        delete("config\\mods\\linker plugin-1.0.jar")
+    }
+
+    doLast {
+        copy {
+            from "build\\libs\\linker plugin-1.0.jar"
+            into "config\\mods"
+        }
     }
 }
