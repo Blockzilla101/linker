@@ -1,8 +1,6 @@
 package linker;
 
 
-import arc.*;
-import arc.backend.headless.*;
 import arc.files.*;
 import arc.struct.*;
 import arc.util.*;
@@ -41,8 +39,8 @@ public class Config {
         public static Color Info = new Color(215, 189, 226);
     }
 
-    private static final String[] tags = {"\u001b[34m\u001b[1m[D]", "\u001b[32m\u001b[1m[I]", "\u001b[33m\u001b[1m[W]", "\u001b[31m\u001b[1m[E]", ""};
-    private static final DateTimeFormatter dataTime = DateTimeFormatter.ofPattern("MM-dd-yyyy | HH:mm:ss");
+    private static final String[] tags = {"&lc&fb[D]", "&lg&fb[I]", "&ly&fb[W]", "&lr&fb[E]", ""};
+    private static final DateTimeFormatter dateTime = DateTimeFormatter.ofPattern("MM-dd-yyyy | HH:mm:ss");
 
     public static void load(String path) throws FileNotFoundException {
         if (!Fi.get(path).exists()) {
@@ -50,7 +48,7 @@ public class Config {
         }
 
         Log.setLogger((level, text) -> {
-            String result = "\u001b[36m[" + dataTime.format(LocalDateTime.now()) + "] " + "[Linker]\u001b[0m" + format(tags[level.ordinal()] + " " + text + "\u001b[0m");
+            String result = "[" + dateTime.format(LocalDateTime.now()) + "] " + format(tags[level.ordinal()] + " " + text + "&fr");
             System.out.println(result);
         });
 

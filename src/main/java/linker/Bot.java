@@ -72,8 +72,8 @@ public class Bot{
             .setColor(Config.EmbedColors.Warn)
             .setTitle("Linker Help")
             .setDescription("Links your discord account to your in game player")
-            .addField(Config.BotPrefix + "link", "link in game player to discord,\nType" + Config.BotPrefix + "link for more help")
-            .addField(Config.BotPrefix + "unlink", "unlink in game player from discord,\nType" + Config.BotPrefix + "unlink for more help")
+            .addField(Config.BotPrefix + "link", "link in game player to discord,\nType " + Config.BotPrefix + "link for more help")
+            .addField(Config.BotPrefix + "unlink", "unlink in game player from discord,\nType " + Config.BotPrefix + "unlink for more help")
             .addField(Config.BotPrefix + "cancel", "cancel an on going link session")
         );
     }

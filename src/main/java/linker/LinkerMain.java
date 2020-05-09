@@ -21,8 +21,6 @@ public class LinkerMain extends Plugin {
     public LinkerMain() throws FileNotFoundException {
         Config.load(Core.settings.getDataDirectory().path() + "/linker_config.json");
 
-        loadFileLogger();
-
         Config.db = new Database(Config.DatabasePath);
         Config.session = new LinkSession();
         Config.bot = new Bot();

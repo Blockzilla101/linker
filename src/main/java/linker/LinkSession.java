@@ -78,18 +78,17 @@ public class LinkSession {
         player.sendMessage("[#AED6F1]" + msg.getAuthor().getDiscriminatedName() + "[#D7BDE2] has started a "+((isUnlink) ? "unlink" : "link")+" session, type [#A3E4D7]/confirm [Key][] to confirm, [#A3E4D7]/deny [Key][] to deny");
 
         timer.schedule(task, (long) (1000 * Config.SessionTimeout));
-        Log.info(((isUnlink) ? "Unlink" : "Link") + " session started by " + msg.getAuthor().getDisplayName() + " for " + player.name);
+        Log.info(((isUnlink) ? "Unlink" : "Link") + " session started by " + msg.getAuthor().getDiscriminatedName() + " for " + player.name);
     }
 
     public void confirm(String key) throws IllegalStateException, IllegalArgumentException {
         if (!this.key.equals(key)) {
             tryNum++;
 
-            if(tryNum >= Config.SessionMaxTries - 1) {
-                InvalidKey();
+            if(tryNum >= Config.SessionMaxTries) {
+                invalidKey();
                 return;
             }
-            throw new IllegalArgumentException("Invalid key");
         }
 
         if (!isActive) throw new IllegalStateException("No session is active");
@@ -118,11 +117,10 @@ public class LinkSession {
         if (!this.key.equals(key)) {
             tryNum++;
 
-            if(tryNum >= Config.SessionMaxTries - 1) {
-                InvalidKey();
+            if(tryNum >= Config.SessionMaxTries) {
+                invalidKey();
                 return;
             }
-            throw new IllegalArgumentException("Invalid key");
         }
         if (!isActive) throw new IllegalStateException("No session is active");
         timer.cancel();
@@ -151,11 +149,11 @@ public class LinkSession {
         reset();
     }
 
-    public void InvalidKey() throws IllegalStateException {
+    public void invalidKey() throws IllegalStateException {
         if (!isActive) throw new IllegalStateException("No session is active");
         timer.cancel();
 
-        player.sendMessage("[#F9E79F]An invalid key was specified more then [#EDBB99]" + Config.SessionMaxTries);
+        player.sendMessage("[#F9E79F]An invalid key was specified more then [#EDBB99]" + (long) Config.SessionMaxTries + "[] times");
         waitMsg.edit(new EmbedBuilder()
             .setColor(Config.EmbedColors.Error)
             .setTitle(((isUnlink) ? "Unlink" : "Link") + " Failed")
