@@ -18,5 +18,4 @@ Config values:<br>
     "sessionTimeout": 20 // <How long will a link/unlink session last [in seconds]>
 }
 ```
-<br>
 ~~since this plugin was built for nydus, change the mindustry version in gradle build file~~
