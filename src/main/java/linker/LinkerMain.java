@@ -61,10 +61,10 @@ public class LinkerMain extends Plugin {
                         Config.db.update(data);
                         player.isAdmin = true;
                     } else {
-                        player.sendMessage("You don't have the required role on discord");
+                        player.sendMessage("[#D7BDE2]You don't have the required role on discord");
                     }
                 } else {
-                    player.sendMessage("Link you're discord first");
+                    player.sendMessage("[#D7BDE2]Link you're discord first");
                 }
             }
             return "hi";
@@ -75,26 +75,26 @@ public class LinkerMain extends Plugin {
     public void registerClientCommands(CommandHandler handler) {
         handler.register("confirm", "<Key>", "Confirm an on-going link session", (args, player) -> {
             if (!Config.session.isSessionActive()) {
-                ((Player) player).sendMessage("No session is active");
+                ((Player) player).sendMessage("[#F5B7B1]No [#F5B7B1]session[] is active");
                 return;
             }
 
             if (!((Player) player).uuid.equals(Config.session.getPlayer().uuid)) {
-                ((Player) player).sendMessage("Only " + Config.session.getPlayer().name + " can confirm the session");
+                ((Player) player).sendMessage("[#D7BDE2]Only [#AED6F1]" + Config.session.getPlayer().name + "[] can confirm the session");
                 return;
             }
             try {
                 Config.session.confirm(args[0]);
             } catch (IllegalStateException e) {
-                ((Player) player).sendMessage("No session is active");
+                ((Player) player).sendMessage("[#F5B7B1]No [#F5B7B1]session[] is active");
             } catch (IllegalArgumentException e) {
-                ((Player) player).sendMessage("Invalid key");
+                ((Player) player).sendMessage("[#F5B7B1]Invalid key");
             }
         });
 
-        handler.register("decline", "<Key>", "Decline an on-going link session", (args, player) -> {
+        handler.register("deny", "<Key>", "Deny an on-going link session", (args, player) -> {
             if (!Config.session.isSessionActive()) {
-                ((Player) player).sendMessage("No session is active");
+                ((Player) player).sendMessage("[#F5B7B1]No [#F5B7B1]session[] is active");
                 return;
             }
 
@@ -105,9 +105,9 @@ public class LinkerMain extends Plugin {
             try {
                 Config.session.decline(args[0]);
             } catch (IllegalStateException e) {
-                ((Player) player).sendMessage("No session is active");
+                ((Player) player).sendMessage("[#F5B7B1]No [#F5B7B1]session[] is active");
             } catch (IllegalArgumentException e) {
-                ((Player) player).sendMessage("Invalid key");
+                ((Player) player).sendMessage("[#F5B7B1]Invalid key");
             }
         });
 
@@ -118,21 +118,21 @@ public class LinkerMain extends Plugin {
                     Server server = Config.bot.api.getServerById(Config.BotServerId).get();
                     if (server.getMemberById(data.discordId).isPresent()) {
                         User user = server.getMemberById(data.discordId).get();
-                        ((Player)player).sendMessage("You're linked to " + user.getDiscriminatedName());
+                        ((Player)player).sendMessage("[#D7BDE2]You're linked to [#AED6F1]" + user.getDiscriminatedName());
                     } else {
                         CompletableFuture<User> task = Config.bot.api.getUserById(data.discordId);
                         try {
                             task.wait();
                             if (task.isDone()) {
-                                ((Player) player).sendMessage("You're linked account " + task.get().getDiscriminatedName() + " is not on " + server.getName());
+                                ((Player) player).sendMessage("[#D7BDE2]You're linked account [#AED6F1]" + task.get().getDiscriminatedName() + "[] is not on [#AED6F1]" + server.getName());
                             }
                         } catch (InterruptedException | ExecutionException e) {
-                            ((Player)player).sendMessage("Failed to get account");
+                            ((Player)player).sendMessage("[#F5B7B1]Failed to get account");
                         }
                     }
                 }
             } else {
-                ((Player)player).sendMessage("You have no linked discord account");
+                ((Player)player).sendMessage("[#A9CCE3]You have no linked discord account");
             }
         });
     }

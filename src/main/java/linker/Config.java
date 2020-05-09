@@ -8,6 +8,7 @@ import arc.struct.*;
 import arc.util.*;
 import arc.util.serialization.*;
 
+import java.awt.*;
 import java.time.*;
 import java.io.FileNotFoundException;
 import java.time.format.DateTimeFormatter;
@@ -25,10 +26,20 @@ public class Config {
     public static String BotServerId;
     public static String BotToken;
 
+
     public static String AdminPassword;
     public static String AdminRoleId;
 
-    public static Integer SessionMaxTries;
+    public static float SessionTimeout;
+    public static float SessionMaxTries;
+
+    public static class EmbedColors {
+        public static Color Error = new Color(245, 183, 177);
+        public static Color Started = new Color(174, 214, 241);
+        public static Color Success = new Color(171, 235, 198);
+        public static Color Warn = new Color(247, 220, 111);
+        public static Color Info = new Color(215, 189, 226);
+    }
 
     private static final String[] tags = {"\u001b[34m\u001b[1m[D]", "\u001b[32m\u001b[1m[I]", "\u001b[33m\u001b[1m[W]", "\u001b[31m\u001b[1m[E]", ""};
     private static final DateTimeFormatter dataTime = DateTimeFormatter.ofPattern("MM-dd-yyyy | HH:mm:ss");
@@ -45,19 +56,20 @@ public class Config {
 
         Log.info("Loading config from " + path);
 
-        ObjectMap<String, String> data = new Json().fromJson(ObjectMap.class, Fi.get(path).read());
+        ObjectMap<String, Object> data = new Json().fromJson(ObjectMap.class, Fi.get(path).read());
 
-        DatabasePath = data.get("databasePath");
+        DatabasePath = (String) data.get("databasePath");
 
-        BotPrefix = data.get("botPrefix");
-        BotChannelId = data.get("botChannelId");
-        BotServerId = data.get("botServerId");
-        BotToken = data.get("botToken");
+        BotPrefix = (String) data.get("botPrefix");
+        BotChannelId = (String) data.get("botChannelId");
+        BotServerId = (String) data.get("botServerId");
+        BotToken = (String) data.get("botToken");
 
-        AdminPassword = data.get("adminPassword");
-        AdminRoleId = data.get("adminRoleId");
+        AdminPassword = (String) data.get("adminPassword");
+        AdminRoleId = (String) data.get("adminRoleId");
 
-        SessionMaxTries = Integer.parseInt(data.get("sessionMaxTries"));
+        SessionMaxTries = (float)data.get("sessionMaxTries");
+        SessionTimeout = (float)data.get("sessionTimeout");
     }
 
 }

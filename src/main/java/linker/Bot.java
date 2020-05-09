@@ -20,7 +20,7 @@ public class Bot{
         api.addMessageCreateListener(event -> {
             Message msg = event.getMessage();
             if (msg.getContent().startsWith(Config.BotPrefix) && msg.getChannel().getIdAsString().equals(Config.BotChannelId)) {
-                String[] text = msg.getContent().split("[ ]?");
+                  String[] text = msg.getContent().substring(msg.getContent().indexOf(Config.BotPrefix) + 1).trim().split("\\s+");
 
                 String command = text[0];
                 String[] args = { };
@@ -45,7 +45,7 @@ public class Bot{
                 break;
 
             case "cancel":
-                unlink(args, msg);
+                cancel(args, msg);
                 break;
 
             default:
@@ -68,22 +68,31 @@ public class Bot{
     }
 
     private void help(Message msg) {
-        msg.getChannel().sendMessage("Help");
+        msg.getChannel().sendMessage(new EmbedBuilder()
+            .setColor(Config.EmbedColors.Warn)
+            .setTitle("Linker Help")
+            .setDescription("Links your discord account to your in game player")
+            .addField(Config.BotPrefix + "link", "link in game player to discord,\nType" + Config.BotPrefix + "link for more help")
+            .addField(Config.BotPrefix + "unlink", "unlink in game player from discord,\nType" + Config.BotPrefix + "unlink for more help")
+            .addField(Config.BotPrefix + "cancel", "cancel an on going link session")
+        );
     }
 
     private void cancel(String[] args, Message msg) {
         if (!Config.session.isSessionActive()) {
             msg.getChannel().sendMessage(new EmbedBuilder()
-                    .setTitle("Error")
-                    .setDescription("There no session active")
+                .setColor(Config.EmbedColors.Error)
+                .setTitle("Error")
+                .setDescription("There are no active sessions")
             );
             return;
         }
 
         if (!Config.session.getDiscordUser().getIdAsString().equals(msg.getAuthor().asUser().get().getIdAsString())) {
             msg.getChannel().sendMessage(new EmbedBuilder()
-                    .setTitle("Error")
-                    .setDescription("Only " + Config.session.getDiscordUser().getDiscriminatedName() + " can cancel the " + (Config.session.isUnlinkSession() ? "unlink" : "link"))
+                .setColor(Config.EmbedColors.Warn)
+                .setTitle("Error")
+                .setDescription("Only " + Config.session.getDiscordUser().getDiscriminatedName() + " can cancel the " + (Config.session.isUnlinkSession() ? "unlink" : "link"))
             );
             return;
         }
@@ -92,6 +101,7 @@ public class Bot{
             Config.session.cancel();
         } catch (IllegalStateException e) {
             msg.getChannel().sendMessage(new EmbedBuilder()
+                .setColor(Config.EmbedColors.Warn)
                 .setTitle("Error")
                 .setDescription("There no session active")
             );
@@ -101,9 +111,11 @@ public class Bot{
     private void unlink(String[] args, Message msg) {
         if (args.length == 0) {
             msg.getChannel().sendMessage(new EmbedBuilder()
+                .setColor(Config.EmbedColors.Info)
                 .setTitle("Unlink help")
-                .setDescription("Unlinks a player from discord account")
+                .setDescription("Unlinks a player from a discord account")
                 .addField("Usage", Config.BotPrefix + "unlink <ign name>")
+                .setFooter("Note: An unlink session only lasts " + Config.SessionTimeout + " seconds")
             );
             return;
         }
@@ -114,13 +126,14 @@ public class Bot{
             if (playerGroup.all().get(i).name.equals(ign)) {
                 PlayerData data = Config.db.getData(playerGroup.all().get(i).uuid);
                 if (data != null && data.discordId != null) {
-                    Config.session.init(msg, msg.getAuthor().asUser().get(), player, true);
+                    Config.session.init(msg, msg.getAuthor().asUser().get(), playerGroup.all().get(i), true);
                     return;
                 }
 
                 msg.getChannel().sendMessage(new EmbedBuilder()
+                    .setColor(Config.EmbedColors.Warn)
                     .setTitle("Unlink Failed")
-                    .setDescription(player.name + " was not linked to a discord account")
+                    .setDescription(playerGroup.all().get(i).name + " was not linked to a discord account")
                 );
 
                 return;
@@ -128,18 +141,21 @@ public class Bot{
         }
 
         msg.getChannel().sendMessage(new EmbedBuilder()
-                .setTitle("Unlink Failed")
-                .setDescription(ign + " was not found on the server, make sure the player is online")
+            .setColor(Config.EmbedColors.Warn)
+            .setTitle("Unlink Failed")
+            .setDescription(ign + " was not found on the server, make sure the player is online")
         );
     }
 
     private void link(String[] args, Message msg) {
         if (args.length == 0) {
             msg.getChannel().sendMessage(new EmbedBuilder()
+                .setColor(Config.EmbedColors.Info)
                 .setTitle("Link help")
                 .setDescription("Links a player to a discord account")
-                .addField("Usage", Config.BotPrefix + "link <ign name>"));
-            return;
+                .addField("Usage", Config.BotPrefix + "link <ign name>")
+                .setFooter("Note: A link session only lasts " + Config.SessionTimeout + " seconds")
+            );
         }
 
         String ign = args[0];
@@ -152,6 +168,7 @@ public class Bot{
         }
 
         msg.getChannel().sendMessage(new EmbedBuilder()
+            .setColor(Config.EmbedColors.Warn)
             .setTitle("Link Failed")
             .setDescription(ign + " was not found on the server, make sure the player is online")
         );

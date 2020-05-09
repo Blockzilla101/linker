@@ -53,21 +53,14 @@ public class Database {
     public boolean update(PlayerData data) {
         try {
             PreparedStatement statement = conn.prepareStatement("" +
-                    "UPDATE players" +
-                    "   SET " +
-                    "       uuid," +
-                    "       discordId," +
-                    "       names," +
-                    "       isAdmin" +
-                    "WHERE" +
-                    "   uuid = ?");
+                    "UPDATE players SET uuid = ?, discordId = ?, names = ?, isAdmin = ? WHERE uuid = ?;");
 
             statement.setString(1, data.uuid);
             statement.setString(2, data.discordId);
             statement.setString(3, json.toJson(data.names));
-            statement.setBoolean(5, data.isAdmin);
+            statement.setBoolean(4, data.isAdmin);
 
-            statement.setString(7, data.uuid);
+            statement.setString(5, data.uuid);
 
             statement.executeUpdate();
 
@@ -87,7 +80,7 @@ public class Database {
             statement.setString(1, data.uuid);
             statement.setString(2, data.discordId);
             statement.setString(3, json.toJson(data.names));
-            statement.setBoolean(5, data.isAdmin);
+            statement.setBoolean(4, data.isAdmin);
 
             statement.executeUpdate();
             Log.info("Added " + data + " to database");
@@ -105,7 +98,7 @@ public class Database {
                     + "uuid text PRIMARY KEY NOT NULL,\n"
                     + "discordId text,\n"
                     + "names text NOT NULL,\n"
-                    + "isAdmin integer NOT NULL,\n"
+                    + "isAdmin integer NOT NULL\n"
                     + ")");
 
             statement.execute();
