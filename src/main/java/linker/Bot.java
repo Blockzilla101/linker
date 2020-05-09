@@ -133,7 +133,7 @@ public class Bot{
                 msg.getChannel().sendMessage(new EmbedBuilder()
                     .setColor(Config.EmbedColors.Warn)
                     .setTitle("Unlink Failed")
-                    .setDescription(playerGroup.all().get(i).name + " was not linked to a discord account")
+                    .setDescription(playerGroup.all().get(i).name + " is not linked to a discord account")
                 );
 
                 return;

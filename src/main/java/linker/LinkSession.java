@@ -67,7 +67,7 @@ public class LinkSession {
                 .setColor(Config.EmbedColors.Started)
                 .setTitle(((isUnlink) ? "Unlink" : "Link") + " Started")
                 .setDescription("Type /confirm [Key] to confirm, /deny [Key] to deny "+((isUnlink) ? "unlink" : "link")+" in-game")
-                .addField("Key: ", key, true)
+                .addField("Key: ", key)
             );
             m.join();
             if (m.isDone()) waitMsg = m.get();
@@ -87,8 +87,10 @@ public class LinkSession {
 
             if(tryNum >= Config.SessionMaxTries) {
                 invalidKey();
-                return;
+            } else {
+                player.sendMessage("[#D7BDE2]Key [#AED6F1]" + key + "[] is not a valid key");
             }
+            return;
         }
 
         if (!isActive) throw new IllegalStateException("No session is active");
@@ -119,9 +121,12 @@ public class LinkSession {
 
             if(tryNum >= Config.SessionMaxTries) {
                 invalidKey();
-                return;
+            } else {
+                player.sendMessage("[#D7BDE2]Key [#AED6F1]" + key + "[] is not a valid key");
             }
+            return;
         }
+
         if (!isActive) throw new IllegalStateException("No session is active");
         timer.cancel();
 
@@ -157,7 +162,7 @@ public class LinkSession {
         waitMsg.edit(new EmbedBuilder()
             .setColor(Config.EmbedColors.Error)
             .setTitle(((isUnlink) ? "Unlink" : "Link") + " Failed")
-            .setDescription("An invalid key was specified more then " + Config.SessionMaxTries)
+            .setDescription("An invalid key was specified more then " + (long) Config.SessionMaxTries + " times")
         );
         reset();
     }
